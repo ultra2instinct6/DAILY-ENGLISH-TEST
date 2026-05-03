@@ -30,7 +30,8 @@ const QuestionScreen = ({
   completedCount,
   totalCount,
 }: QuestionScreenProps) => {
-  const [timerSeconds, setTimerSeconds] = useState(30);
+  const initialTimerSeconds = question.timerSeconds ?? 30;
+  const [timerSeconds, setTimerSeconds] = useState(initialTimerSeconds);
   const [timerRunning, setTimerRunning] = useState(false);
   const [timerFinished, setTimerFinished] = useState(false);
   const [showSavedCue, setShowSavedCue] = useState(false);
@@ -57,7 +58,7 @@ const QuestionScreen = ({
   }, [timerRunning]);
 
   useEffect(() => {
-    setTimerSeconds(30);
+    setTimerSeconds(initialTimerSeconds);
     setTimerRunning(false);
     setTimerFinished(false);
     setShowSavedCue(false);
@@ -99,9 +100,15 @@ const QuestionScreen = ({
   };
 
   const startTimer = () => {
-    setTimerSeconds(30);
+    setTimerSeconds(initialTimerSeconds);
     setTimerRunning(true);
     setTimerFinished(false);
+  };
+
+  const formatTime = (totalSeconds: number) => {
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
   const renderMultiInputs = (count: number, labels: string[]) => {
@@ -190,12 +197,25 @@ const QuestionScreen = ({
         );
       case 'timer_challenge':
         return (
-          <div className="stack-gap-md">
+          <div className="stack-gap-md timer-challenge">
+            <div
+              aria-live="polite"
+              className={`timer-display${timerRunning ? ' timer-display-running' : ''}${timerFinished ? ' timer-display-finished' : ''}`}
+              role="timer"
+            >
+              {formatTime(timerSeconds)}
+            </div>
             <Button disabled={timerRunning} onClick={startTimer} variant="secondary">
-              ⏱️ Start 30-Second Timer
+              {timerFinished
+                ? `⏱️ Restart ${initialTimerSeconds}-Second Timer`
+                : `⏱️ Start ${initialTimerSeconds}-Second Timer`}
             </Button>
             <p aria-live="polite" className="muted">
-              {timerRunning ? `Countdown: ${timerSeconds}` : timerFinished ? 'Time complete. ✅' : 'Countdown: 30'}
+              {timerRunning
+                ? 'Keep speaking…'
+                : timerFinished
+                  ? 'Time complete. ✅'
+                  : `Press start, then speak for ${initialTimerSeconds} seconds.`}
             </p>
           </div>
         );

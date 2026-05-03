@@ -17,6 +17,7 @@ export interface Question {
   type: QuestionType;
   inputLabels?: string[];
   exampleWords?: string[];
+  timerSeconds?: number;
 }
 
 export interface QuestionResponse {

@@ -531,6 +531,40 @@ textarea {
   animation: savedCueFade 1500ms ease forwards;
 }
 
+.timer-challenge {
+  align-items: stretch;
+}
+
+.timer-display {
+  font-size: 3.5rem;
+  font-weight: 800;
+  text-align: center;
+  padding: 18px 12px;
+  border: 3px solid var(--color-border-dark);
+  background: #f5f9ff;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 2px;
+  border-radius: 8px;
+}
+
+.timer-display-running {
+  background: #fff3cd;
+  border-color: #b8860b;
+  color: #6b4d00;
+  animation: timerPulse 1s ease-in-out infinite;
+}
+
+.timer-display-finished {
+  background: #e8f7ec;
+  border-color: #0a6b1f;
+  color: #0a6b1f;
+}
+
+@keyframes timerPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+
 @keyframes savedCueFade {
   0% { opacity: 0; transform: translateY(-4px); }
   15% { opacity: 1; transform: translateY(0); }
