@@ -860,3 +860,111 @@ input[type="checkbox"] {
   font-size: 0.95rem;
   color: var(--color-muted);
 }
+
+/* ---------- Report Card ---------- */
+.report-card {
+  display: grid;
+  gap: 14px;
+}
+
+.report-card-summary {
+  display: grid;
+  grid-template-columns: minmax(120px, 160px) 1fr;
+  gap: 14px;
+  align-items: center;
+  border: 1px solid var(--color-border-dark);
+  padding: 14px;
+}
+
+.report-card-grade-block {
+  text-align: center;
+  border-right: 1px solid var(--color-border);
+  padding-right: 12px;
+}
+
+.report-card-grade {
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1;
+  margin: 4px 0 6px;
+}
+
+.report-card-stats p {
+  margin: 2px 0;
+}
+
+.report-card-message {
+  border-left: 3px solid var(--color-border-dark);
+  padding: 8px 12px;
+  background: #fafafa;
+}
+
+.report-card-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.report-card-table th,
+.report-card-table td {
+  text-align: left;
+  padding: 8px 6px;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: top;
+}
+
+.report-card-table th {
+  font-weight: 700;
+  border-bottom: 1px solid var(--color-border-dark);
+}
+
+.report-card-table .row-non-graded td {
+  color: var(--color-muted);
+}
+
+.grade-pill {
+  display: inline-block;
+  min-width: 28px;
+  padding: 2px 8px;
+  text-align: center;
+  border: 1px solid var(--color-border-dark);
+  font-weight: 700;
+  border-radius: 0;
+}
+
+.grade-pill.grade-A { background: #111111; color: #ffffff; }
+.grade-pill.grade-B { background: #2f2f2f; color: #ffffff; }
+.grade-pill.grade-C { background: #ffffff; color: #111111; }
+.grade-pill.grade-D { background: #ffffff; color: #111111; border-style: dashed; }
+.grade-pill.grade-E { background: #ffffff; color: #111111; border-style: dotted; }
+
+.report-card-legend-list {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 0;
+  display: grid;
+  gap: 4px;
+  font-size: 0.92rem;
+}
+
+.report-card-legend-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.small {
+  font-size: 0.88rem;
+}
+
+@media (max-width: 480px) {
+  .report-card-summary {
+    grid-template-columns: 1fr;
+  }
+  .report-card-grade-block {
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+    padding: 0 0 10px;
+  }
+}
+

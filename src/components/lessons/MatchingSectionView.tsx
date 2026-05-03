@@ -1,10 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import Button from '../Button';
-import { MatchingSection } from '../../types/lessonTypes';
+import { MatchingSection, SectionScore } from '../../types/lessonTypes';
 
 interface Props {
   section: MatchingSection;
   onComplete: () => void;
+  onScoreRecorded?: (score: Omit<SectionScore, 'recordedAt'>) => void;
 }
 
 const shuffle = <T,>(items: T[]): T[] => {
@@ -16,17 +17,26 @@ const shuffle = <T,>(items: T[]): T[] => {
   return copy;
 };
 
-const MatchingSectionView = ({ section, onComplete }: Props) => {
+const MatchingSectionView = ({ section, onComplete, onScoreRecorded }: Props) => {
   const shuffledMeanings = useMemo(() => shuffle(section.pairs), [section.pairs]);
   const [activeTermId, setActiveTermId] = useState<string | null>(null);
   const [matched, setMatched] = useState<Record<string, string>>({});
   // matched[termId] = meaningId
+  const triedTerms = useRef<Set<string>>(new Set());
+  const firstTryRef = useRef(0);
+  const attemptsRef = useRef(0);
 
   const allDone = Object.keys(matched).length === section.pairs.length;
 
   const handleMeaningClick = (meaningId: string) => {
     if (!activeTermId) return;
+    attemptsRef.current += 1;
+    const isFirstTryForTerm = !triedTerms.current.has(activeTermId);
+    triedTerms.current.add(activeTermId);
     if (activeTermId === meaningId) {
+      if (isFirstTryForTerm) {
+        firstTryRef.current += 1;
+      }
       setMatched({ ...matched, [activeTermId]: meaningId });
     } else {
       // Wrong — give a gentle nudge by clearing selection.
@@ -37,6 +47,15 @@ const MatchingSectionView = ({ section, onComplete }: Props) => {
       return;
     }
     setActiveTermId(null);
+  };
+
+  const finish = () => {
+    onScoreRecorded?.({
+      total: section.pairs.length,
+      firstTry: firstTryRef.current,
+      attempts: attemptsRef.current,
+    });
+    onComplete();
   };
 
   return (
@@ -88,7 +107,7 @@ const MatchingSectionView = ({ section, onComplete }: Props) => {
       </div>
 
       <div className="footer-nav">
-        <Button fullWidth onClick={onComplete} disabled={!allDone}>
+        <Button fullWidth onClick={finish} disabled={!allDone}>
           {allDone ? 'Done ✅' : `Match ${section.pairs.length - Object.keys(matched).length} more`}
         </Button>
       </div>

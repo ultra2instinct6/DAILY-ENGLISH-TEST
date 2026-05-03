@@ -20,6 +20,7 @@ import {
   markLessonCompleted,
   markSectionComplete,
   markSpeakingItemDone,
+  recordSectionScore,
   saveParentReview,
   saveTeacherNotes,
   saveWrittenAnswer,
@@ -305,6 +306,7 @@ const App = () => {
     speakingCompleted: [],
     teacherNotes: '',
     parentReview: '',
+    sectionScores: {},
   };
 
   if (screen === 'courseHome') {
@@ -381,6 +383,10 @@ const App = () => {
         }}
         onSaveParentReview={(value) => {
           saveParentReview(lessonId, value);
+          refreshLessonProgress();
+        }}
+        onRecordScore={(sectionId, score) => {
+          recordSectionScore(lessonId, sectionId, score);
           refreshLessonProgress();
         }}
         onFinishLesson={() => {

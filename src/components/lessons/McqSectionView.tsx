@@ -1,26 +1,36 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Button from '../Button';
 import SpeakButton from './SpeakButton';
-import { McqSection } from '../../types/lessonTypes';
+import { McqSection, SectionScore } from '../../types/lessonTypes';
 
 interface Props {
   section: McqSection;
   onComplete: () => void;
+  onScoreRecorded?: (score: Omit<SectionScore, 'recordedAt'>) => void;
 }
 
-const McqSectionView = ({ section, onComplete }: Props) => {
+const McqSectionView = ({ section, onComplete, onScoreRecorded }: Props) => {
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [revealed, setRevealed] = useState(false);
+  const triedThisQuestion = useRef(false);
+  const firstTryRef = useRef(0);
+  const attemptsRef = useRef(0);
   const question = section.questions[index];
   const isLast = index === section.questions.length - 1;
   const isCorrect = selected !== null && selected === question.correctIndex;
 
   const next = () => {
     if (isLast) {
+      onScoreRecorded?.({
+        total: section.questions.length,
+        firstTry: firstTryRef.current,
+        attempts: attemptsRef.current,
+      });
       onComplete();
       return;
     }
+    triedThisQuestion.current = false;
     setSelected(null);
     setRevealed(false);
     setIndex(index + 1);
@@ -53,6 +63,13 @@ const McqSectionView = ({ section, onComplete }: Props) => {
               variant={variant}
               disabled={revealed && !isThisCorrect && !isThisSelected}
               onClick={() => {
+                attemptsRef.current += 1;
+                if (!triedThisQuestion.current) {
+                  triedThisQuestion.current = true;
+                  if (optionIndex === question.correctIndex) {
+                    firstTryRef.current += 1;
+                  }
+                }
                 setSelected(optionIndex);
                 setRevealed(true);
               }}

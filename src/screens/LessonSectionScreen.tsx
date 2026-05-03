@@ -10,7 +10,7 @@ import FillBlanksSectionView from '../components/lessons/FillBlanksSectionView';
 import SpeakingSectionView from '../components/lessons/SpeakingSectionView';
 import FunActivitySectionView from '../components/lessons/FunActivitySectionView';
 import ReviewChecklistSectionView from '../components/lessons/ReviewChecklistSectionView';
-import { Lesson, LessonProgress } from '../types/lessonTypes';
+import { Lesson, LessonProgress, SectionScore } from '../types/lessonTypes';
 import { stopSpeaking } from '../utils/tts';
 
 interface Props {
@@ -24,6 +24,7 @@ interface Props {
   onMarkSpeakingDone: (itemId: string) => void;
   onSaveTeacherNotes: (value: string) => void;
   onSaveParentReview: (value: string) => void;
+  onRecordScore: (sectionId: string, score: Omit<SectionScore, 'recordedAt'>) => void;
   onFinishLesson: () => void;
 }
 
@@ -38,6 +39,7 @@ const LessonSectionScreen = ({
   onMarkSpeakingDone,
   onSaveTeacherNotes,
   onSaveParentReview,
+  onRecordScore,
   onFinishLesson,
 }: Props) => {
   const section = lesson.sections[sectionIndex];
@@ -49,6 +51,10 @@ const LessonSectionScreen = ({
   const complete = () => {
     stopSpeaking();
     onSectionComplete(section.id);
+  };
+
+  const recordScore = (score: Omit<SectionScore, 'recordedAt'>) => {
+    onRecordScore(section.id, score);
   };
 
   let body = null;
@@ -67,13 +73,13 @@ const LessonSectionScreen = ({
   } else if (section.type === 'reading') {
     body = <ReadingSectionView section={section} onComplete={complete} />;
   } else if (section.type === 'mcq') {
-    body = <McqSectionView section={section} onComplete={complete} />;
+    body = <McqSectionView section={section} onComplete={complete} onScoreRecorded={recordScore} />;
   } else if (section.type === 'trueFalse') {
-    body = <TrueFalseSectionView section={section} onComplete={complete} />;
+    body = <TrueFalseSectionView section={section} onComplete={complete} onScoreRecorded={recordScore} />;
   } else if (section.type === 'matching') {
-    body = <MatchingSectionView section={section} onComplete={complete} />;
+    body = <MatchingSectionView section={section} onComplete={complete} onScoreRecorded={recordScore} />;
   } else if (section.type === 'fillBlanks') {
-    body = <FillBlanksSectionView section={section} onComplete={complete} />;
+    body = <FillBlanksSectionView section={section} onComplete={complete} onScoreRecorded={recordScore} />;
   } else if (section.type === 'speaking') {
     body = (
       <SpeakingSectionView

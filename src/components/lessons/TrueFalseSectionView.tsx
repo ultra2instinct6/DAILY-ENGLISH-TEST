@@ -1,25 +1,46 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Button from '../Button';
 import SpeakButton from './SpeakButton';
-import { TrueFalseSection } from '../../types/lessonTypes';
+import { SectionScore, TrueFalseSection } from '../../types/lessonTypes';
 
 interface Props {
   section: TrueFalseSection;
   onComplete: () => void;
+  onScoreRecorded?: (score: Omit<SectionScore, 'recordedAt'>) => void;
 }
 
-const TrueFalseSectionView = ({ section, onComplete }: Props) => {
+const TrueFalseSectionView = ({ section, onComplete, onScoreRecorded }: Props) => {
   const [index, setIndex] = useState(0);
   const [picked, setPicked] = useState<boolean | null>(null);
+  const triedThisItem = useRef(false);
+  const firstTryRef = useRef(0);
+  const attemptsRef = useRef(0);
   const item = section.items[index];
   const isLast = index === section.items.length - 1;
   const correct = picked !== null && picked === item.answer;
 
+  const recordPick = (value: boolean) => {
+    attemptsRef.current += 1;
+    if (!triedThisItem.current) {
+      triedThisItem.current = true;
+      if (value === item.answer) {
+        firstTryRef.current += 1;
+      }
+    }
+    setPicked(value);
+  };
+
   const next = () => {
     if (isLast) {
+      onScoreRecorded?.({
+        total: section.items.length,
+        firstTry: firstTryRef.current,
+        attempts: attemptsRef.current,
+      });
       onComplete();
       return;
     }
+    triedThisItem.current = false;
     setPicked(null);
     setIndex(index + 1);
   };
@@ -40,14 +61,14 @@ const TrueFalseSectionView = ({ section, onComplete }: Props) => {
         <Button
           fullWidth
           variant={picked === true ? 'primary' : 'secondary'}
-          onClick={() => setPicked(true)}
+          onClick={() => recordPick(true)}
         >
           ✅ True / ਸਹੀ
         </Button>
         <Button
           fullWidth
           variant={picked === false ? 'primary' : 'secondary'}
-          onClick={() => setPicked(false)}
+          onClick={() => recordPick(false)}
         >
           ❌ False / ਗਲਤ
         </Button>

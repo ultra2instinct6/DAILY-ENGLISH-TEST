@@ -1,16 +1,28 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Button from '../Button';
-import { FillBlanksSection } from '../../types/lessonTypes';
+import { FillBlanksSection, SectionScore } from '../../types/lessonTypes';
 
 interface Props {
   section: FillBlanksSection;
   onComplete: () => void;
+  onScoreRecorded?: (score: Omit<SectionScore, 'recordedAt'>) => void;
 }
 
-const FillBlanksSectionView = ({ section, onComplete }: Props) => {
+const FillBlanksSectionView = ({ section, onComplete, onScoreRecorded }: Props) => {
   const [answers, setAnswers] = useState<Record<string, string>>({});
+  const triedItems = useRef<Set<string>>(new Set());
+  const firstTryRef = useRef(0);
+  const attemptsRef = useRef(0);
 
   const setAnswer = (itemId: string, word: string) => {
+    attemptsRef.current += 1;
+    const item = section.items.find((entry) => entry.id === itemId);
+    if (item && !triedItems.current.has(itemId)) {
+      triedItems.current.add(itemId);
+      if (word.toLowerCase() === item.answer.toLowerCase()) {
+        firstTryRef.current += 1;
+      }
+    }
     setAnswers({ ...answers, [itemId]: word });
   };
 
@@ -86,7 +98,18 @@ const FillBlanksSectionView = ({ section, onComplete }: Props) => {
       ) : null}
 
       <div className="footer-nav">
-        <Button fullWidth onClick={onComplete} disabled={!allCorrect}>
+        <Button
+          fullWidth
+          onClick={() => {
+            onScoreRecorded?.({
+              total: section.items.length,
+              firstTry: firstTryRef.current,
+              attempts: attemptsRef.current,
+            });
+            onComplete();
+          }}
+          disabled={!allCorrect}
+        >
           {allCorrect ? 'Done ✅' : 'Fill all blanks correctly'}
         </Button>
       </div>

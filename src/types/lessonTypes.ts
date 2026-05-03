@@ -164,6 +164,17 @@ export interface Course {
   lessons: Lesson[];
 }
 
+export interface SectionScore {
+  /** Number of items in the activity. */
+  total: number;
+  /** Items answered correctly on the very first try. */
+  firstTry: number;
+  /** Total taps/picks the student made (first-try + retries). */
+  attempts: number;
+  /** ISO timestamp of when the score was recorded. */
+  recordedAt: string;
+}
+
 export interface LessonProgress {
   startedAt: string;
   updatedAt: string;
@@ -174,6 +185,8 @@ export interface LessonProgress {
   speakingCompleted: string[];
   teacherNotes: string;
   parentReview: string;
+  /** Per-section scores keyed by section id (only graded section types). */
+  sectionScores: Record<string, SectionScore>;
 }
 
 export type LessonProgressMap = Record<string, LessonProgress>;

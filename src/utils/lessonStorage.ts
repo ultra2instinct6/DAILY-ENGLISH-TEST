@@ -1,4 +1,4 @@
-import { LessonProgress, LessonProgressMap } from '../types/lessonTypes';
+import { LessonProgress, LessonProgressMap, SectionScore } from '../types/lessonTypes';
 
 const STORAGE_KEY = 'dailyEnglishSelfTest.lessonProgress';
 
@@ -25,6 +25,20 @@ const emptyProgress = (): LessonProgress => {
     speakingCompleted: [],
     teacherNotes: '',
     parentReview: '',
+    sectionScores: {},
+  };
+};
+
+const withDefaults = (progress: LessonProgress): LessonProgress => {
+  return {
+    ...progress,
+    sectionScores: progress.sectionScores ?? {},
+    difficultWords: progress.difficultWords ?? [],
+    completedSections: progress.completedSections ?? [],
+    writtenAnswers: progress.writtenAnswers ?? {},
+    speakingCompleted: progress.speakingCompleted ?? [],
+    teacherNotes: progress.teacherNotes ?? '',
+    parentReview: progress.parentReview ?? '',
   };
 };
 
@@ -48,7 +62,12 @@ export const loadAllLessonProgress = (): LessonProgressMap => {
   try {
     const parsed = JSON.parse(raw) as unknown;
     if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-      return parsed as LessonProgressMap;
+      const map = parsed as LessonProgressMap;
+      const normalized: LessonProgressMap = {};
+      for (const [lessonId, value] of Object.entries(map)) {
+        normalized[lessonId] = withDefaults(value);
+      }
+      return normalized;
     }
   } catch {
     return {};
@@ -72,7 +91,7 @@ export const saveAllLessonProgress = (progress: LessonProgressMap): void => {
 
 export const getLessonProgress = (lessonId: string): LessonProgress => {
   const all = loadAllLessonProgress();
-  return all[lessonId] ?? emptyProgress();
+  return withDefaults(all[lessonId] ?? emptyProgress());
 };
 
 export const updateLessonProgress = (
@@ -80,7 +99,7 @@ export const updateLessonProgress = (
   updater: (current: LessonProgress) => LessonProgress,
 ): LessonProgress => {
   const all = loadAllLessonProgress();
-  const current = all[lessonId] ?? emptyProgress();
+  const current = withDefaults(all[lessonId] ?? emptyProgress());
   const next: LessonProgress = {
     ...updater(current),
     updatedAt: new Date().toISOString(),
@@ -153,4 +172,26 @@ export const markLessonCompleted = (lessonId: string): LessonProgress => {
     ...current,
     completedAt: new Date().toISOString(),
   }));
+};
+
+export const recordSectionScore = (
+  lessonId: string,
+  sectionId: string,
+  score: Omit<SectionScore, 'recordedAt'>,
+): LessonProgress => {
+  return updateLessonProgress(lessonId, (current) => {
+    const previous = current.sectionScores?.[sectionId];
+    // Keep the better first-try score if the student replays the section.
+    const isBetter =
+      !previous ||
+      score.firstTry / Math.max(score.total, 1) >=
+        previous.firstTry / Math.max(previous.total, 1);
+    const next: SectionScore = isBetter
+      ? { ...score, recordedAt: new Date().toISOString() }
+      : previous;
+    return {
+      ...current,
+      sectionScores: { ...current.sectionScores, [sectionId]: next },
+    };
+  });
 };

@@ -1,4 +1,5 @@
 import Button from '../Button';
+import ReportCard from '../ReportCard';
 import { Lesson, LessonProgress, ReviewChecklistSection } from '../../types/lessonTypes';
 
 interface Props {
@@ -40,6 +41,8 @@ const ReviewChecklistSectionView = ({
     <section className="card question-card">
       <h2 className="section-title">{section.title.en}</h2>
       <p className="punjabi muted">{section.title.pa}</p>
+
+      <ReportCard lesson={lesson} progress={progress} />
 
       <div>
         <p className="label">What you finished:</p>
