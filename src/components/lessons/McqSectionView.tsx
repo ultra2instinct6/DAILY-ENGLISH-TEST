@@ -84,6 +84,12 @@ const McqSectionView = ({ section, onComplete }: Props) => {
       {revealed && isCorrect ? (
         <div className="help-box">
           <p>✅ Great! / ਸ਼ਾਬਾਸ਼!</p>
+          {question.explanation ? (
+            <>
+              <p>{question.explanation.en}</p>
+              <p className="punjabi muted">{question.explanation.pa}</p>
+            </>
+          ) : null}
         </div>
       ) : null}
 

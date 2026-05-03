@@ -26,7 +26,7 @@ export interface IntroSection {
 export interface Flashcard {
   term: string;
   definition: Bilingual;
-  example?: Bilingual;
+  example?: string;
 }
 
 export interface FlashcardsSection {
@@ -63,6 +63,7 @@ export interface TrueFalseItem {
   id: string;
   statement: Bilingual;
   answer: boolean;
+  correction?: Bilingual;
 }
 
 export interface TrueFalseSection {
@@ -113,11 +114,19 @@ export interface SpeakingSection {
   items: SpeakingItem[];
 }
 
+export interface FunActivityItem {
+  title?: Bilingual;
+  instruction: Bilingual;
+  example?: Bilingual;
+  punjabiHelp?: Bilingual;
+}
+
 export interface FunActivitySection {
   id: string;
   type: 'funActivity';
   title: Bilingual;
   instruction: Bilingual;
+  activities?: FunActivityItem[];
 }
 
 export interface ReviewChecklistSection {

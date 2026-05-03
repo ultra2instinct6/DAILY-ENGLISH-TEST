@@ -49,6 +49,9 @@ const FlashcardsSectionView = ({ section, difficultWords, onToggleDifficult, onC
             <p className="label">Meaning</p>
             <p>{card.definition.en}</p>
             <p className="punjabi muted">{card.definition.pa}</p>
+            {card.example ? (
+              <p className="flashcard-example"><em>{card.example}</em></p>
+            ) : null}
             <p className="muted small">Tap to see word</p>
           </div>
         ) : (

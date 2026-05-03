@@ -60,8 +60,12 @@ const TrueFalseSectionView = ({ section, onComplete }: Props) => {
           ) : (
             <>
               <p>Try again. Read the sentence one more time.</p>
-              <p className="punjabi muted">ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ। ਵਾਕ ਫਿਰ ਪੜ੍ਹੋ।</p>
-              <div className="footer-nav" style={{ marginTop: 8 }}>
+              <p className="punjabi muted">ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ। ਵਾਕ ਫਿਰ ਪੜ੍ਹੋ।</p>              {item.correction ? (
+                <>
+                  <p>{item.correction.en}</p>
+                  <p className="punjabi muted">{item.correction.pa}</p>
+                </>
+              ) : null}              <div className="footer-nav" style={{ marginTop: 8 }}>
                 <Button variant="secondary" onClick={() => setPicked(null)}>
                   🔁 Try again
                 </Button>
