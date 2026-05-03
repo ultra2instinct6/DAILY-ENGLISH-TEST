@@ -59,7 +59,10 @@ export type AppScreen =
   | 'dailyReview'
   | 'completion'
   | 'savedTests'
-  | 'savedTestDetail';
+  | 'savedTestDetail'
+  | 'courseHome'
+  | 'lessonHome'
+  | 'lessonSection';
 
 export type TestStatus = 'in_progress' | 'completed';
 

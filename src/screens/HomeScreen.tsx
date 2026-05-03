@@ -11,6 +11,7 @@ interface HomeScreenProps {
   onStartToday: () => void;
   onContinueLast: () => void;
   onOpenSavedTests: () => void;
+  onOpenSocialScience: () => void;
 }
 
 const HomeScreen = ({
@@ -20,6 +21,7 @@ const HomeScreen = ({
   onStartToday,
   onContinueLast,
   onOpenSavedTests,
+  onOpenSocialScience,
 }: HomeScreenProps) => {
   const continueDisabled = !lastInProgressTest;
   const continueTarget = lastInProgressTest;
@@ -54,6 +56,9 @@ const HomeScreen = ({
         </Button>
         <Button fullWidth variant="secondary" onClick={onOpenSavedTests}>
           My Saved Practice 📚
+        </Button>
+        <Button fullWidth variant="secondary" onClick={onOpenSocialScience}>
+          Social Science 📖 / ਸੋਸ਼ਲ ਸਾਇੰਸ
         </Button>
       </div>
 

@@ -1,7 +1,10 @@
 import { useMemo, useState } from 'react';
 import CompletionScreen from './screens/CompletionScreen';
+import CourseHomeScreen from './screens/CourseHomeScreen';
 import DailyReviewScreen from './screens/DailyReviewScreen';
 import HomeScreen from './screens/HomeScreen';
+import LessonHomeScreen from './screens/LessonHomeScreen';
+import LessonSectionScreen from './screens/LessonSectionScreen';
 import RulesScreen from './screens/RulesScreen';
 import SavedTestDetailScreen from './screens/SavedTestDetailScreen';
 import SavedTestsScreen from './screens/SavedTestsScreen';
@@ -9,8 +12,20 @@ import SpeakingRuleScreen from './screens/SpeakingRuleScreen';
 import StudentInfoScreen from './screens/StudentInfoScreen';
 import TestFlowScreen from './screens/TestFlowScreen';
 import { DailyTestRecord, QuestionResponse, ScreenName } from './types/appTypes';
+import { LessonProgressMap } from './types/lessonTypes';
 import { getCurrentTimeString, getTodayDateString } from './utils/dateUtils';
 import { deleteTest, loadAllTests, saveTest } from './utils/storage';
+import {
+  loadAllLessonProgress,
+  markLessonCompleted,
+  markSectionComplete,
+  markSpeakingItemDone,
+  saveParentReview,
+  saveTeacherNotes,
+  saveWrittenAnswer,
+  toggleDifficultWord,
+} from './utils/lessonStorage';
+import { socialScienceCourse } from './data/courses/socialScience';
 import { getCompletedCount, getTotalCount } from './utils/progressUtils';
 import { questions } from './data/questions';
 
@@ -55,6 +70,11 @@ const App = () => {
   const [screen, setScreen] = useState<ScreenName>('home');
   const [activeDate, setActiveDate] = useState<string | null>(null);
   const [selectedSavedDate, setSelectedSavedDate] = useState<string | null>(null);
+  const [lessonProgressMap, setLessonProgressMap] = useState<LessonProgressMap>(() =>
+    loadAllLessonProgress(),
+  );
+  const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
+  const [activeSectionIndex, setActiveSectionIndex] = useState<number>(0);
 
   const todayDate = getTodayDateString();
   const todayTest = tests[todayDate] ?? null;
@@ -157,6 +177,7 @@ const App = () => {
       onStartToday={startToday}
       onContinueLast={continueLast}
       onOpenSavedTests={() => setScreen('savedTests')}
+      onOpenSocialScience={() => setScreen('courseHome')}
     />
   );
 
@@ -261,6 +282,105 @@ const App = () => {
           setScreen('savedTestDetail');
         }}
         onHome={() => setScreen('home')}
+      />
+    );
+  }
+
+  const refreshLessonProgress = () => {
+    setLessonProgressMap(loadAllLessonProgress());
+  };
+
+  const activeLesson = activeLessonId
+    ? socialScienceCourse.lessons.find((entry) => entry.id === activeLessonId) ?? null
+    : null;
+
+  const blankLessonProgress = {
+    startedAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    completedSections: [],
+    difficultWords: [],
+    writtenAnswers: {},
+    speakingCompleted: [],
+    teacherNotes: '',
+    parentReview: '',
+  };
+
+  if (screen === 'courseHome') {
+    content = (
+      <CourseHomeScreen
+        course={socialScienceCourse}
+        progressMap={lessonProgressMap}
+        onBack={() => setScreen('home')}
+        onOpenLesson={(lessonId) => {
+          setActiveLessonId(lessonId);
+          setScreen('lessonHome');
+        }}
+      />
+    );
+  }
+
+  if (screen === 'lessonHome' && activeLesson) {
+    content = (
+      <LessonHomeScreen
+        lesson={activeLesson}
+        progress={lessonProgressMap[activeLesson.id] ?? blankLessonProgress}
+        onBack={() => setScreen('courseHome')}
+        onOpenSection={(index) => {
+          setActiveSectionIndex(index);
+          setScreen('lessonSection');
+        }}
+        onFinishLesson={() => {
+          markLessonCompleted(activeLesson.id);
+          refreshLessonProgress();
+          setScreen('courseHome');
+        }}
+      />
+    );
+  }
+
+  if (screen === 'lessonSection' && activeLesson) {
+    const lessonId = activeLesson.id;
+    content = (
+      <LessonSectionScreen
+        lesson={activeLesson}
+        sectionIndex={activeSectionIndex}
+        progress={lessonProgressMap[lessonId] ?? blankLessonProgress}
+        onBack={() => setScreen('lessonHome')}
+        onSectionComplete={(sectionId) => {
+          markSectionComplete(lessonId, sectionId);
+          refreshLessonProgress();
+          const nextIndex = activeSectionIndex + 1;
+          if (nextIndex < activeLesson.sections.length) {
+            setActiveSectionIndex(nextIndex);
+          } else {
+            setScreen('lessonHome');
+          }
+        }}
+        onToggleDifficultWord={(word) => {
+          toggleDifficultWord(lessonId, word);
+          refreshLessonProgress();
+        }}
+        onSaveAnswer={(key, value) => {
+          saveWrittenAnswer(lessonId, key, value);
+          refreshLessonProgress();
+        }}
+        onMarkSpeakingDone={(itemId) => {
+          markSpeakingItemDone(lessonId, itemId);
+          refreshLessonProgress();
+        }}
+        onSaveTeacherNotes={(value) => {
+          saveTeacherNotes(lessonId, value);
+          refreshLessonProgress();
+        }}
+        onSaveParentReview={(value) => {
+          saveParentReview(lessonId, value);
+          refreshLessonProgress();
+        }}
+        onFinishLesson={() => {
+          markLessonCompleted(lessonId);
+          refreshLessonProgress();
+          setScreen('courseHome');
+        }}
       />
     );
   }
