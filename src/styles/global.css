@@ -836,3 +836,27 @@ input[type="checkbox"] {
 .lesson-checklist li {
   font-size: 1rem;
 }
+
+.course-card {
+  display: grid;
+  gap: 8px;
+  border: 2px solid var(--color-border-dark);
+  background: #fafaff;
+}
+
+.course-card .eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.lesson-card-locked {
+  background: #f7f7f7;
+  opacity: 0.92;
+}
+
+.flashcard-example {
+  font-size: 0.95rem;
+  color: var(--color-muted);
+}

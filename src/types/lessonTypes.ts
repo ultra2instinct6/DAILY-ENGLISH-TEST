@@ -154,6 +154,7 @@ export interface Lesson {
   level: string;
   estimatedMinutes: string;
   sections: LessonSection[];
+  comingSoon?: boolean;
 }
 
 export interface Course {

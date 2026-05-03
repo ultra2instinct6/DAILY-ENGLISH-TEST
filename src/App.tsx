@@ -174,6 +174,8 @@ const App = () => {
       todayTest={todayTest}
       lastInProgressTest={lastInProgressTest}
       savedCount={savedTests.length}
+      socialScienceCourse={socialScienceCourse}
+      lessonProgressMap={lessonProgressMap}
       onStartToday={startToday}
       onContinueLast={continueLast}
       onOpenSavedTests={() => setScreen('savedTests')}
@@ -312,7 +314,12 @@ const App = () => {
         progressMap={lessonProgressMap}
         onBack={() => setScreen('home')}
         onOpenLesson={(lessonId) => {
+          const target = socialScienceCourse.lessons.find((entry) => entry.id === lessonId);
+          if (!target || target.comingSoon) {
+            return;
+          }
           setActiveLessonId(lessonId);
+          setActiveSectionIndex(0);
           setScreen('lessonHome');
         }}
       />
