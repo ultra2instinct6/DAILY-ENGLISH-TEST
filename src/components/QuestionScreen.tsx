@@ -308,10 +308,20 @@ const QuestionScreen = ({
                 ? `⏭️ Skip for now (${skipsRemaining} left)`
                 : '⏭️ No skips left'}
           </Button>
-          <Button onClick={onNext} variant="secondary">
+          <Button
+            disabled={!response.completed && !response.skipped}
+            onClick={onNext}
+            variant="secondary"
+          >
             Next ➡️
           </Button>
         </div>
+
+        {!response.completed && !response.skipped ? (
+          <p className="muted next-hint" role="status">
+            Mark Done ✅ or Skip ⏭️ to continue.
+          </p>
+        ) : null}
 
         <div className="question-actions-back">
           <Button onClick={onBack} variant="secondary">
