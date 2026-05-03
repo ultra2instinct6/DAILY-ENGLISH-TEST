@@ -121,9 +121,13 @@ const QuestionScreen = ({
             </label>
             <input
               aria-label={`${labels[index]} answer ${index + 1}`}
+              autoCapitalize="off"
+              autoComplete="off"
+              autoCorrect="off"
               className="input input-row-field"
               id={`${question.id}-${index}`}
               onChange={(event) => updateAnswerList(index, event.target.value)}
+              spellCheck={false}
               type="text"
               value={response.studentAnswers?.[index] ?? ''}
             />
@@ -143,9 +147,13 @@ const QuestionScreen = ({
             </label>
             <input
               aria-label={`Word list answer ${index + 1}`}
+              autoCapitalize="off"
+              autoComplete="off"
+              autoCorrect="off"
               className="input input-row-field"
               id={`${question.id}-word-${index}`}
               onChange={(event) => updateAnswerList(index, event.target.value)}
+              spellCheck={false}
               type="text"
               value={response.studentAnswers?.[index] ?? ''}
             />
@@ -173,9 +181,13 @@ const QuestionScreen = ({
             Student Answer
             <input
               aria-label="Student answer"
+              autoCapitalize="off"
+              autoComplete="off"
+              autoCorrect="off"
               className="input"
               id={`${question.id}-answer`}
               onChange={(event) => updateResponse({ studentAnswer: event.target.value })}
+              spellCheck={false}
               type="text"
               value={response.studentAnswer}
             />
@@ -266,11 +278,15 @@ const QuestionScreen = ({
             My note <span className="label-optional">(optional / ਜੇ ਚਾਹੋ)</span>
             <textarea
               aria-label="My note"
+              autoCapitalize="off"
+              autoComplete="off"
+              autoCorrect="off"
               className="textarea textarea-note"
               id={`${question.id}-review`}
               onChange={(event) => updateResponse({ reviewNote: event.target.value })}
               placeholder="E.g., this one was hard / I want to try again."
               rows={3}
+              spellCheck={false}
               value={response.reviewNote}
             />
           </label>
