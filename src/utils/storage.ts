@@ -104,6 +104,7 @@ const normalizeStoredTest = (test: Partial<StoredTest>): StoredTest => {
   return {
     id: test.id ?? `${date}-${Date.now()}`,
     studentName: test.studentName ?? '',
+    studentProfile: test.studentProfile,
     studentClass: test.studentClass ?? '',
     date,
     startTime: test.startTime ?? getCurrentTimeString(),
@@ -128,6 +129,7 @@ const toDailyTest = (test: StoredTest): DailyTest => {
   return {
     id: test.id,
     studentName: test.studentName,
+    studentProfile: test.studentProfile,
     date: test.date,
     startTime: test.startTime,
     endTime: test.endTime,

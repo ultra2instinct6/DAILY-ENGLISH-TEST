@@ -7,6 +7,11 @@ interface ButtonProps {
   onClick?: () => void;
   disabled?: boolean;
   type?: 'button' | 'submit';
+  ariaLabel?: string;
+  ariaPressed?: boolean;
+  ariaChecked?: boolean;
+  role?: string;
+  title?: string;
 }
 
 const Button = ({
@@ -16,6 +21,11 @@ const Button = ({
   onClick,
   disabled = false,
   type = 'button',
+  ariaLabel,
+  ariaPressed,
+  ariaChecked,
+  role,
+  title,
 }: ButtonProps) => {
   return (
     <button
@@ -23,6 +33,11 @@ const Button = ({
       disabled={disabled}
       onClick={onClick}
       type={type}
+      aria-label={ariaLabel}
+      aria-pressed={ariaPressed}
+      aria-checked={ariaChecked}
+      role={role}
+      title={title}
     >
       {children}
     </button>

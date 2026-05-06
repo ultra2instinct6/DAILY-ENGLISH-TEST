@@ -68,6 +68,7 @@ const ReportCard = ({ lesson, progress, showHeader = true }: Props) => {
       <div>
         <p className="label">Scores by domain / ਹਰ ਖੇਤਰ ਦੇ ਅੰਕ:</p>
         <table className="report-card-table">
+          <caption className="sr-only">Section scores and grades for this test</caption>
           <thead>
             <tr>
               <th>Section</th>

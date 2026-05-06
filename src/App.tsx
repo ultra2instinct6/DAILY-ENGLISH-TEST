@@ -189,13 +189,15 @@ const App = () => {
       <StudentInfoScreen
         initialDate={todayDate}
         initialName={todayInProgressTest?.studentName ?? ''}
+        initialProfile={todayInProgressTest?.studentProfile}
         initialStartTime={todayInProgressTest?.startTime ?? getCurrentTimeString()}
         onBack={() => setScreen('home')}
-        onStart={(studentName, date, startTime) => {
+        onStart={(studentName, date, startTime, studentProfile) => {
           const timestamp = new Date().toISOString();
           const nextTest: DailyTestRecord = {
             id: `${date}-${Date.now()}`,
             studentName,
+            studentProfile,
             studentClass: '',
             date,
             startTime,

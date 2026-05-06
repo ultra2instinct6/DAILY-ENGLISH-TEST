@@ -2,6 +2,33 @@ import { useEffect, useRef, useState } from 'react';
 import { Question, QuestionResponse } from '../types/appTypes';
 import Button from './Button';
 import ProgressLine from './ProgressLine';
+import AddressFieldsActivity from './questionActivities/AddressFieldsActivity';
+import PhoneContactsActivity from './questionActivities/PhoneContactsActivity';
+import MoodLikertActivity from './questionActivities/MoodLikertActivity';
+import WeatherThreeDayActivity from './questionActivities/WeatherThreeDayActivity';
+import ScenariosActivity from './questionActivities/ScenariosActivity';
+import VocabMatchActivity from './questionActivities/VocabMatchActivity';
+import YesNoChecklistActivity from './questionActivities/YesNoChecklistActivity';
+import PhrasesReviewActivity from './questionActivities/PhrasesReviewActivity';
+import MultiSayStepsActivity from './questionActivities/MultiSayStepsActivity';
+import ClockQuizActivity from './questionActivities/ClockQuizActivity';
+import CompoundSentencesActivity from './questionActivities/CompoundSentencesActivity';
+import ColorMemoryGameActivity from './questionActivities/ColorMemoryGameActivity';
+import ColorTapGameActivity from './questionActivities/ColorTapGameActivity';
+import FoodLikertActivity from './questionActivities/FoodLikertActivity';
+import InventoryLikertActivity from './questionActivities/InventoryLikertActivity';
+import ActionWordsPlusSummaryActivity from './questionActivities/ActionWordsPlusSummaryActivity';
+import PeopleJobsEducationActivity from './questionActivities/PeopleJobsEducationActivity';
+import SchoolDayBlocksActivity from './questionActivities/SchoolDayBlocksActivity';
+import FoodYesNoChecklistActivity from './questionActivities/FoodYesNoChecklistActivity';
+import SeeRoomListActivity from './questionActivities/SeeRoomListActivity';
+import MultiPromptTimerActivity from './questionActivities/MultiPromptTimerActivity';
+import BilingualSpeakingTimerActivity from './questionActivities/BilingualSpeakingTimerActivity';
+import MultiSentenceActivity from './questionActivities/MultiSentenceActivity';
+import SignaturePracticeActivity from './questionActivities/SignaturePracticeActivity';
+import FingerWrittenAnswersActivity from './questionActivities/FingerWrittenAnswersActivity';
+import WordCounter from './questionActivities/WordCounter';
+import { canMarkComplete } from './questionActivities/canMarkComplete';
 
 interface QuestionScreenProps {
   question: Question;
@@ -175,10 +202,11 @@ const QuestionScreen = ({
           </div>
         );
       case 'sentence':
-      case 'question_answer':
+      case 'question_answer': {
+        const min = question.requiredWords ?? 0;
         return (
           <label className="label" htmlFor={`${question.id}-answer`}>
-            Student Answer
+            Your answer{min ? ` (at least ${min} words)` : ''}
             <input
               aria-label="Student answer"
               autoCapitalize="off"
@@ -187,12 +215,15 @@ const QuestionScreen = ({
               className="input"
               id={`${question.id}-answer`}
               onChange={(event) => updateResponse({ studentAnswer: event.target.value })}
+              placeholder="Write a clear, full sentence…"
               spellCheck={false}
               type="text"
               value={response.studentAnswer}
             />
+            {min > 0 ? <WordCounter text={response.studentAnswer} min={min} /> : null}
           </label>
         );
+      }
       case 'three_sentence':
         return (
           <fieldset className="input-group">
@@ -231,6 +262,56 @@ const QuestionScreen = ({
             </p>
           </div>
         );
+      case 'address_fields':
+        return <AddressFieldsActivity question={question} response={response} updateResponse={updateResponse} />;
+      case 'phone_contacts':
+        return <PhoneContactsActivity question={question} response={response} updateResponse={updateResponse} />;
+      case 'mood_likert':
+        return <MoodLikertActivity question={question} response={response} updateResponse={updateResponse} />;
+      case 'weather_three_day':
+        return <WeatherThreeDayActivity question={question} response={response} updateResponse={updateResponse} />;
+      case 'scenarios':
+        return <ScenariosActivity question={question} response={response} updateResponse={updateResponse} />;
+      case 'vocab_match':
+        return <VocabMatchActivity question={question} response={response} updateResponse={updateResponse} />;
+      case 'yesno_checklist':
+        return <YesNoChecklistActivity question={question} response={response} updateResponse={updateResponse} />;
+      case 'phrases_review':
+        return <PhrasesReviewActivity question={question} response={response} updateResponse={updateResponse} />;
+      case 'multi_say_steps':
+        return <MultiSayStepsActivity question={question} response={response} updateResponse={updateResponse} />;
+      case 'clock_quiz':
+        return <ClockQuizActivity question={question} response={response} updateResponse={updateResponse} />;
+      case 'compound_sentences':
+        return <CompoundSentencesActivity question={question} response={response} updateResponse={updateResponse} />;
+      case 'color_memory_game':
+        return <ColorMemoryGameActivity question={question} response={response} updateResponse={updateResponse} />;
+      case 'color_tap_game':
+        return <ColorTapGameActivity question={question} response={response} updateResponse={updateResponse} />;
+      case 'food_likert':
+        return <FoodLikertActivity question={question} response={response} updateResponse={updateResponse} />;
+      case 'inventory_likert':
+        return <InventoryLikertActivity question={question} response={response} updateResponse={updateResponse} />;
+      case 'action_words_plus_summary':
+        return <ActionWordsPlusSummaryActivity question={question} response={response} updateResponse={updateResponse} />;
+      case 'people_jobs_education':
+        return <PeopleJobsEducationActivity question={question} response={response} updateResponse={updateResponse} />;
+      case 'school_day_blocks':
+        return <SchoolDayBlocksActivity question={question} response={response} updateResponse={updateResponse} />;
+      case 'food_yesno_50':
+        return <FoodYesNoChecklistActivity question={question} response={response} updateResponse={updateResponse} />;
+      case 'see_room_list':
+        return <SeeRoomListActivity question={question} response={response} updateResponse={updateResponse} />;
+      case 'multi_prompt_timer':
+        return <MultiPromptTimerActivity question={question} response={response} updateResponse={updateResponse} />;
+      case 'bilingual_speaking_timer':
+        return <BilingualSpeakingTimerActivity question={question} response={response} updateResponse={updateResponse} />;
+      case 'multi_sentence':
+        return <MultiSentenceActivity question={question} response={response} updateResponse={updateResponse} />;
+      case 'signature_practice':
+        return <SignaturePracticeActivity question={question} response={response} updateResponse={updateResponse} />;
+      case 'finger_written_answers':
+        return <FingerWrittenAnswersActivity question={question} response={response} updateResponse={updateResponse} />;
       default:
         return null;
     }
@@ -238,6 +319,7 @@ const QuestionScreen = ({
 
   const checkboxSymbol = response.completed ? '☑' : '☐';
   const skipDisabled = skipsRemaining <= 0 || response.completed || response.skipped;
+  const gating = canMarkComplete(question, response);
   const completeLabel = response.completed
     ? 'Done ✅'
     : isMemory
@@ -255,9 +337,19 @@ const QuestionScreen = ({
       <ProgressLine completed={completedCount} total={totalCount} />
 
       <div className="card question-main-card">
-        <p className="question-checkline">
-          <span aria-hidden="true">{checkboxSymbol}</span> {question.prompt}
-        </p>
+        <div className="question-prompt-block">
+          {question.promptPa ? (
+            <p className="question-prompt-pa punjabi">
+              <span aria-hidden="true">{checkboxSymbol}</span> {question.promptPa}
+            </p>
+          ) : null}
+          <p className="question-prompt-en">
+            {question.promptPa ? null : (
+              <span aria-hidden="true">{checkboxSymbol} </span>
+            )}
+            {question.prompt}
+          </p>
+        </div>
 
         {question.answerFrame ? (
           <div>
@@ -297,10 +389,16 @@ const QuestionScreen = ({
         ) : null}
 
         <div className="question-actions-primary">
-          <Button disabled={response.completed} onClick={onMarkComplete} variant="primary">
+          <Button disabled={response.completed || !gating.allowed} onClick={onMarkComplete} variant="primary">
             {completeLabel}
           </Button>
         </div>
+
+        {!response.completed && !gating.allowed && gating.reason ? (
+          <p className="muted gating-hint" role="status">
+            🔒 {gating.reason}
+          </p>
+        ) : null}
 
         {showSavedCue ? (
           <p className="saved-cue" role="status">✓ Saved!</p>

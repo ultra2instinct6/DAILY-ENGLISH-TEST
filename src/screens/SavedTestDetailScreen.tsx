@@ -64,6 +64,36 @@ const SavedTestDetailScreen = ({ test, onBack, onBackHome }: SavedTestDetailScre
         <p><strong>Start time:</strong> {test.startTime}</p>
         <p><strong>End time:</strong> {test.endTime || 'In progress'}</p>
         <p><strong>Done / ਪੂਰਾ ਕੀਤਾ:</strong> {completedCount} / {totalCount}</p>
+        {test.studentProfile && (
+          <>
+            <div className="divider" />
+            <p><strong>About me / ਮੇਰੇ ਬਾਰੇ:</strong></p>
+            {test.studentProfile.firstName && (
+              <p><strong>First name:</strong> {test.studentProfile.firstName}</p>
+            )}
+            {test.studentProfile.lastName && (
+              <p><strong>Last name:</strong> {test.studentProfile.lastName}</p>
+            )}
+            {test.studentProfile.height && (
+              <p><strong>Height:</strong> {test.studentProfile.height}</p>
+            )}
+            {test.studentProfile.weight && (
+              <p><strong>Weight:</strong> {test.studentProfile.weight}</p>
+            )}
+            {test.studentProfile.skinColor && (
+              <p><strong>Skin color:</strong> {test.studentProfile.skinColor}</p>
+            )}
+            {test.studentProfile.hairColor && (
+              <p><strong>Hair color:</strong> {test.studentProfile.hairColor}</p>
+            )}
+            {test.studentProfile.eyeColor && (
+              <p><strong>Eye color:</strong> {test.studentProfile.eyeColor}</p>
+            )}
+            {test.studentProfile.nationality && (
+              <p><strong>Nationality:</strong> {test.studentProfile.nationality}</p>
+            )}
+          </>
+        )}
         <div className="divider" />
       </section>
 

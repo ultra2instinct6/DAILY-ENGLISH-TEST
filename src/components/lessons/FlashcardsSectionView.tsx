@@ -42,7 +42,8 @@ const FlashcardsSectionView = ({ section, difficultWords, onToggleDifficult, onC
         type="button"
         className="flashcard"
         onClick={() => setFlipped(!flipped)}
-        aria-label="Tap to flip card"
+        aria-pressed={flipped}
+        aria-label={flipped ? `Showing meaning of ${card.term}. Activate to see word.` : `Showing word ${card.term}. Activate to see meaning.`}
       >
         {flipped ? (
           <div className="flashcard-face">

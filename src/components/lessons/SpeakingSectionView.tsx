@@ -64,7 +64,11 @@ const SpeakingSectionView = ({
           spellCheck={false}
           onChange={(event) => onSaveAnswer(answerKey, event.target.value)}
           placeholder="Type what you said out loud..."
+          aria-describedby={`${answerKey}-hint`}
         />
+        <span id={`${answerKey}-hint`} className="sr-only">
+          Optional: write down what you spoke for your own record.
+        </span>
       </label>
 
       <div className="footer-nav">

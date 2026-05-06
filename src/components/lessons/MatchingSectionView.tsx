@@ -77,6 +77,8 @@ const MatchingSectionView = ({ section, onComplete, onScoreRecorded }: Props) =>
                 variant={isActive || isMatched ? 'primary' : 'secondary'}
                 disabled={Boolean(isMatched)}
                 onClick={() => setActiveTermId(pair.id)}
+                ariaPressed={isActive || Boolean(isMatched)}
+                ariaLabel={isMatched ? `${pair.term} (matched)` : pair.term}
               >
                 {pair.term} {isMatched ? '✅' : ''}
               </Button>

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import AppHeader from '../components/AppHeader';
 import Button from '../components/Button';
 import ReportCard from '../components/ReportCard';
@@ -32,8 +31,6 @@ const LessonHomeScreen = ({ lesson, progress, onBack, onOpenSection, onFinishLes
   const total = lesson.sections.length;
   const done = progress.completedSections.length;
   const allDone = done === total;
-  const [showReport, setShowReport] = useState(false);
-  const hasAnyScores = Object.keys(progress.sectionScores ?? {}).length > 0;
 
   return (
     <div className="screen-stack">
@@ -46,20 +43,11 @@ const LessonHomeScreen = ({ lesson, progress, onBack, onOpenSection, onFinishLes
       <section className="card hero-card">
         <p className="muted">{lesson.unit} • {lesson.level} • ⏱ {lesson.estimatedMinutes} min</p>
         <p>Progress: {done} / {total} {allDone ? '✅' : ''}</p>
-        <Button
-          variant="secondary"
-          fullWidth
-          onClick={() => setShowReport((value) => !value)}
-        >
-          {showReport ? 'Hide Report Card 📊' : `View Report Card 📊${hasAnyScores ? '' : ' (no scores yet)'}`}
-        </Button>
       </section>
 
-      {showReport ? (
-        <section className="card">
-          <ReportCard lesson={lesson} progress={progress} />
-        </section>
-      ) : null}
+      <section className="card">
+        <ReportCard lesson={lesson} progress={progress} />
+      </section>
 
       <div className="stack-gap-md">
         {lesson.sections.map((section, index) => {
